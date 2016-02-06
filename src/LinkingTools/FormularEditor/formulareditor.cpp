@@ -32,17 +32,17 @@ bool FormularEditor::readFromFile(QString fileName) {
     }
 
     QString inputCheck;
-    extern QStringList g_capacities;
+    QString defaultCapacity = Formular::capacities.first();
     inputCheck = domRoot.attribute("capacity", "_err_");
     if(inputCheck == "_err_") {
-        qWarning() << "[Formular editor] Read from file: No \"capacity\" attribute. Set default" << m_defaultCapacity;
-        inputCheck = QString::number(m_defaultCapacity);
+        qWarning() << "[Formular editor] Read from file: No \"capacity\" attribute. Set default" << defaultCapacity;
+        inputCheck = QString::number(defaultCapacity);
     }
-    if(g_capacities.indexOf(inputCheck) == -1) {
-        qWarning() << "[Formular editor] Read from file: Bad \"capacity\" attribute. Set default" << m_defaultCapacity;
-        inputCheck = QString::number(m_defaultCapacity);
+    if(Formular::capacities.indexOf(inputCheck) == -1) {
+        qWarning() << "[Formular editor] Read from file: Bad \"capacity\" attribute. Set default" << defaultCapacity;
+        inputCheck = QString::number(defaultCapacity);
     }
-    capacityBox->setCurrentIndex(g_capacities.indexOf(inputCheck));
+    capacityBox->setCurrentIndex(Formular::capacities.indexOf(inputCheck));
 
     inputCheck = domRoot.attribute("description", "_err_");
     if(inputCheck == "_err_")
@@ -68,40 +68,41 @@ bool FormularEditor::readFromFile(QString fileName) {
         }
         QString description = inputCheck;
 
+        const QString defaultFieldSize = "1";
         inputCheck = domField.attribute("size", "_err_");
         if(inputCheck == "_err_") {
-            qWarning() << "[Formular editor] Read from file: No \"size\" attribute. Set default" << m_defaultFieldSize;
-            inputCheck = QString::number(m_defaultFieldSize);
+            qWarning() << "[Formular editor] Read from file: No \"size\" attribute. Set default" << defaultFieldSize;
+            inputCheck = QString::number(defaultFieldSize);
         }
         if(inputCheck.toInt() <= 0) {
-            qWarning() << "[Formular editor] Read from file: Bad \"size\" attribute. Set default" << m_defaultFieldSize;
-            inputCheck = QString::number(m_defaultFieldSize);
+            qWarning() << "[Formular editor] Read from file: Bad \"size\" attribute. Set default" << defaultFieldSize;
+            inputCheck = QString::number(defaultFieldSize);
         }
         int size = inputCheck.toInt();
 
-        extern QStringList g_fieldDimensions;
+        const FieldData::Dimension defaultFieldDimension = FieldData::No;
         inputCheck = domField.attribute("dimension", "_err_");
         if(inputCheck == "_err_") {
-            qWarning() << "[Formular editor] Read from file: No \"dimension\" attribute. Set default" << g_fieldDimensions.at(m_defaultFieldDimension);
-            inputCheck = g_fieldDimensions.at(m_defaultFieldDimension);
+            qWarning() << "[Formular editor] Read from file: No \"dimension\" attribute. Set default" << FieldData::dimensions.at(defaultFieldDimension);
+            inputCheck = FieldData::dimensions.at(defaultFieldDimension);
         }
-        if(g_fieldDimensions.indexOf(inputCheck) == -1) {
-            qWarning() << "[Formular editor] Read from file: Bad \"dimension\" attribute. Set default" << g_fieldDimensions.at(m_defaultFieldDimension);
-            inputCheck = g_fieldDimensions.at(m_defaultFieldDimension);
+        if(FieldData::dimensions.indexOf(inputCheck) == -1) {
+            qWarning() << "[Formular editor] Read from file: Bad \"dimension\" attribute. Set default" << FieldData::dimensions.at(defaultFieldDimension);
+            inputCheck = FieldData::dimensions.at(defaultFieldDimension);
         }
-        FieldDimension dimension = (FieldDimension)g_fieldDimensions.indexOf(inputCheck);
+        FieldData::Dimension dimension = (FieldDimension)FieldData::dimensions.indexOf(inputCheck);
 
-        extern QStringList g_fieldTypes;
+        const FieldData::Type defaultFieldType = FieldData::Integer;
         inputCheck = domField.attribute("type", "_err_");
         if(inputCheck == "_err_") {
-            qWarning() << "[Formular editor] Read from file: No \"type\" attribute. Set default" << g_fieldTypes.at(m_defaultFieldType);
-            inputCheck = g_fieldTypes.at(m_defaultFieldType);
+            qWarning() << "[Formular editor] Read from file: No \"type\" attribute. Set default" << FieldData::types.at(defaultFieldType);
+            inputCheck = FieldData::types.at(defaultFieldType);
         }
-        if(g_fieldTypes.indexOf(inputCheck) == -1) {
-            qWarning() << "[Formular editor] Read from file: Bad \"type\" attribute. Set default" << g_fieldTypes.at(m_defaultFieldType);
-            inputCheck = g_fieldTypes.at(m_defaultFieldType);
+        if(FieldData::types.indexOf(inputCheck) == -1) {
+            qWarning() << "[Formular editor] Read from file: Bad \"type\" attribute. Set default" << FieldData::types.at(defaultFieldType);
+            inputCheck = FieldData::types.at(defaultFieldType);
         }
-        FieldType type = (FieldType)g_fieldTypes.indexOf(inputCheck);
+        FieldData::Type type = (FieldType)FieldData::types.indexOf(inputCheck);
 
         switch(type) {
             case Integer:
@@ -116,28 +117,32 @@ bool FormularEditor::readFromFile(QString fileName) {
             }
             case Scalable: {
                 FieldScalable *field = new FieldScalable(name, description, type, dimension, size);
+                const double defaultHighOrderBit = 0.0;
                 inputCheck = domField.attribute("highOrderBit", "_err_");
                 if(inputCheck == "_err_") {
-                    qWarning() << "[Formular editor] Read from file: No \"highOrderBit\" attribute. Set default" << m_defaultHighOrderBit;
-                    inputCheck = QString::number(m_defaultHighOrderBit);
+                    qWarning() << "[Formular editor] Read from file: No \"highOrderBit\" attribute. Set default" << defaultHighOrderBit;
+                    inputCheck = QString::number(defaultHighOrderBit);
                 }
                 field->setHighOrderBit(inputCheck.toDouble());
+                const double defaultLowerOrderBit = 0.0;
                 inputCheck = domField.attribute("lowerOrderBit", "_err_");
                 if(inputCheck == "_err_") {
-                    qWarning() << "[Formular editor] Read from file: No \"lowerOrderBit\" attribute. Set default" << m_defaultLowerOrderBit;
-                    inputCheck = QString::number(m_defaultLowerOrderBit);
+                    qWarning() << "[Formular editor] Read from file: No \"lowerOrderBit\" attribute. Set default" << defaultLowerOrderBit;
+                    inputCheck = QString::number(defaultLowerOrderBit);
                 }
                 field->setLowerOrderBit(inputCheck.toDouble());
+                const bool defaultAdditionalCodeState = false;
                 inputCheck = domField.attribute("additionalCode", "_err_");
                 if(inputCheck == "_err_") {
-                    qWarning() << "[Formular editor] Read from file: No \"additionalCode\" attribute. Set default" << m_defaultAdditionalCodeState;
-                    inputCheck = QString::number(m_defaultAdditionalCodeState);
+                    qWarning() << "[Formular editor] Read from file: No \"additionalCode\" attribute. Set default" << defaultAdditionalCodeState;
+                    inputCheck = QString::number(defaultAdditionalCodeState);
                 }
                 field->setAdditionalCode(inputCheck.toInt());
+                const bool defaultHighBitSignState = false;
                 inputCheck = domField.attribute("highBitSign", "_err_");
                 if(inputCheck == "_err_") {
-                    qWarning() << "[Formular editor] Read from file: No \"highBitSign\" attribute. Set default" << m_defaultHighBitSignState;
-                    inputCheck = QString::number(m_defaultHighBitSignState);
+                    qWarning() << "[Formular editor] Read from file: No \"highBitSign\" attribute. Set default" << defaultHighBitSignState;
+                    inputCheck = QString::number(defaultHighBitSignState);
                 }
                 field->setHighBitSign(inputCheck.toInt());
                 m_formularModel->insertRow(m_formularModel->rowCount());
@@ -147,13 +152,15 @@ bool FormularEditor::readFromFile(QString fileName) {
             case Enumeration: {
                 FieldEnumeration *field = new FieldEnumeration(name, description, type, dimension, size);
                 QDomElement domEnumerationElement = domField.firstChildElement();
+                uint code = 0;
                 while(!domEnumerationElement.isNull()) {
                     field->getModel()->insertRow(field->getModel()->rowCount());
                     inputCheck = domEnumerationElement.attribute("code", "_err_");
                     if(inputCheck == "_err_") {
-                        qWarning() << "[Formular editor] Read from file: No \"code\" attribute. Set default" << m_defaultEnumerationCode;
-                        inputCheck = QString::number(m_defaultEnumerationCode);
+                        qWarning() << "[Formular editor] Read from file: No \"code\" attribute. Set default" << code;
+                        inputCheck = QString::number(code);
                     }
+                    ++code;
                     field->getModel()->setData(field->getModel()->index(field->getModel()->rowCount() - 1, Code), QVariant(inputCheck.toInt()), Qt::EditRole);
                     inputCheck = domEnumerationElement.attribute("acronym", "_err_");
                     if(inputCheck == "_err_") {
@@ -196,21 +203,18 @@ bool FormularEditor::writeToFile(QString fileName) {
     QDomNode xmlNode = domDocument.createProcessingInstruction("xml", "version=\"1.0\" encoding=\"UTF-8\"");
     domDocument.insertBefore(xmlNode, domDocument.firstChildElement());
     QDomElement domRoot;
-    extern QStringList g_capacities;
     domRoot = domDocument.createElement("formular");
-    domRoot.setAttribute("capacity", g_capacities.at(capacityBox->currentIndex()));
+    domRoot.setAttribute("capacity", Formular::capacities.at(capacityBox->currentIndex()));
     domRoot.setAttribute("description", descriptionEdit->toPlainText());
     domDocument.appendChild(domRoot);
     for(int i = 0; i < m_formularModel->rowCount(); i++) {
         QDomElement domField = domDocument.createElement("field");
-        extern QStringList g_fieldTypes;
-        extern QStringList g_fieldDimensions;
         domRoot.appendChild(domField);
         FieldData *field = (FieldData*)m_formularModel->data(m_formularModel->index(i), Qt::EditRole).toInt();
         domField.setAttribute("name", field->getName());
         domField.setAttribute("description", field->getDescription());
-        domField.setAttribute("type", g_fieldTypes.at(field->getType()));
-        domField.setAttribute("dimension", g_fieldDimensions.at(field->getDimension()));
+        domField.setAttribute("type", FieldData::types.at(field->getType()));
+        domField.setAttribute("dimension", FieldData::dimensions.at(field->getDimension()));
         domField.setAttribute("size", field->getSize());
         switch(field->getType()) {
             case Integer:
