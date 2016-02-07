@@ -2,11 +2,12 @@
 #include "ui_formulareditor.h"
 
 #include <QDomDocument>
+#include <QDebug>
 
-#include "../formular.h"
+#include "../fielddata.h"
 
 FormularEditor::FormularEditor(QWidget *parent)
-    : QMainWindow(parent), ui(new Ui::FormularEditor) {
+    : FileEditor(parent), ui(new Ui::FormularEditor) {
     ui->setupUi(this);
 }
 
@@ -34,17 +35,17 @@ bool FormularEditor::readFromFile(QString fileName) {
     }
 
     QString inputCheck;
-    QString defaultCapacity = Formular::capacities.first();
+    const uint defaultCapacity = 8;
     inputCheck = domRoot.attribute("capacity", "_err_");
     if(inputCheck == "_err_") {
         qWarning() << "[Formular editor] Read from file: No \"capacity\" attribute. Set default" << defaultCapacity;
         inputCheck = QString::number(defaultCapacity);
     }
-    if(Formular::capacities.indexOf(inputCheck) == -1) {
+    if(inputCheck.toInt()%8) {
         qWarning() << "[Formular editor] Read from file: Bad \"capacity\" attribute. Set default" << defaultCapacity;
         inputCheck = QString::number(defaultCapacity);
     }
-    capacityBox->setCurrentIndex(Formular::capacities.indexOf(inputCheck));
+    ui->capacityBox->setCurrentIndex(0);
 
     inputCheck = domRoot.attribute("description", "_err_");
     if(inputCheck == "_err_")
@@ -52,7 +53,7 @@ bool FormularEditor::readFromFile(QString fileName) {
         qWarning() << "[Formular editor] Read from file: No \"description\" attribute. Set empty string";
         inputCheck = "";
     }
-    descriptionEdit->setText(inputCheck);
+    ui->descriptionEdit->setText(inputCheck);
 
     QDomElement domField = domRoot.firstChildElement();
     while(!domField.isNull()) {
@@ -70,7 +71,7 @@ bool FormularEditor::readFromFile(QString fileName) {
         }
         QString description = inputCheck;
 
-        const QString defaultFieldSize = "1";
+        const uint defaultFieldSize = 1;
         inputCheck = domField.attribute("size", "_err_");
         if(inputCheck == "_err_") {
             qWarning() << "[Formular editor] Read from file: No \"size\" attribute. Set default" << defaultFieldSize;
@@ -92,7 +93,7 @@ bool FormularEditor::readFromFile(QString fileName) {
             qWarning() << "[Formular editor] Read from file: Bad \"dimension\" attribute. Set default" << FieldData::dimensions.at(defaultFieldDimension);
             inputCheck = FieldData::dimensions.at(defaultFieldDimension);
         }
-        FieldData::Dimension dimension = (FieldDimension)FieldData::dimensions.indexOf(inputCheck);
+        FieldData::Dimension dimension = (FieldData::Dimension)FieldData::dimensions.indexOf(inputCheck);
 
         const FieldData::Type defaultFieldType = FieldData::Integer;
         inputCheck = domField.attribute("type", "_err_");
@@ -104,20 +105,20 @@ bool FormularEditor::readFromFile(QString fileName) {
             qWarning() << "[Formular editor] Read from file: Bad \"type\" attribute. Set default" << FieldData::types.at(defaultFieldType);
             inputCheck = FieldData::types.at(defaultFieldType);
         }
-        FieldData::Type type = (FieldType)FieldData::types.indexOf(inputCheck);
+        FieldData::Type type = (FieldData::Type)FieldData::types.indexOf(inputCheck);
 
         switch(type) {
-            case Integer:
-            case Real:
-            case Boolean:
-            case String:
-            case Unused: {
+            case FieldData::Integer:
+            case FieldData::Real:
+            case FieldData::Boolean:
+            case FieldData::String:
+            case FieldData::Unused: {
                 FieldData *field = new FieldData(name, description, type, dimension, size);
                 m_formularModel->insertRow(m_formularModel->rowCount());
                 m_formularModel->setData(m_formularModel->index(m_formularModel->rowCount() - 1), QVariant((int)field), Qt::EditRole);
                 break;
             }
-            case Scalable: {
+            case FieldData::Scalable: {
                 FieldScalable *field = new FieldScalable(name, description, type, dimension, size);
                 const double defaultHighOrderBit = 0.0;
                 inputCheck = domField.attribute("highOrderBit", "_err_");
@@ -151,7 +152,7 @@ bool FormularEditor::readFromFile(QString fileName) {
                 m_formularModel->setData(m_formularModel->index(m_formularModel->rowCount() - 1), QVariant((int)field), Qt::EditRole);
                 break;
             }
-            case Enumeration: {
+            case FieldData::Enumeration: {
                 FieldEnumeration *field = new FieldEnumeration(name, description, type, dimension, size);
                 QDomElement domEnumerationElement = domField.firstChildElement();
                 uint code = 0;
@@ -182,7 +183,7 @@ bool FormularEditor::readFromFile(QString fileName) {
                 m_formularModel->setData(m_formularModel->index(m_formularModel->rowCount() - 1), QVariant((int)field), Qt::EditRole);
                 break;
             }
-            case Constant: {
+            case FieldData::Constant: {
                 FieldConstant *field = new FieldConstant(name, description, type, dimension, size);
                 inputCheck = domField.attribute("value", "_err_");
                 if(inputCheck == "_err_") {

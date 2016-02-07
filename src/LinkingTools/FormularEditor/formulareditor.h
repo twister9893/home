@@ -8,7 +8,7 @@ namespace Ui {
 class FormularEditor;
 }
 
-class FormularEditor : public QMainWindow, public FileEditor {
+class FormularEditor : public FileEditor {
     Q_OBJECT
 public:
     explicit FormularEditor(QWidget *parent = 0);

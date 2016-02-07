@@ -1,12 +1,13 @@
 #ifndef FEDIT_H
 #define FEDIT_H
 
+#include <QMainWindow>
 #include <QFileDialog>
 #include <QMessageBox>
 
-class FileEditor {
+class FileEditor : public QMainWindow {
 public:
-    FileEditor() : m_defaultDir("./"), m_isEdited(false) {}
+    FileEditor(QWidget *parent) : QMainWindow(parent), m_defaultDir("./"), m_isEdited(false) {}
     virtual ~FileEditor();
 
     void setDefaultDir(QString defaultDir) {m_defaultDir = defaultDir;}

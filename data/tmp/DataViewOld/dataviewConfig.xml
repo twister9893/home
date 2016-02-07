@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE config>
+<config>
+    <abonentList directory="../data/sopr" filter="*-View.xml" groupSeparator=" "/>
+    <dataView updateInterval="1000"/>
+</config>

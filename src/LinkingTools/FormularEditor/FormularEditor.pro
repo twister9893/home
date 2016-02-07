@@ -14,8 +14,10 @@ TEMPLATE = app
 INCLUDEPATH += ../../include
 
 SOURCES += main.cpp\
-        formulareditor.cpp
+        formulareditor.cpp \
+    formularmodel.cpp
 
-HEADERS  += formulareditor.h
+HEADERS  += formulareditor.h \
+    formularmodel.h
 
 FORMS    += formulareditor.ui

@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/logic">
+        <file>icon/ledon32.png</file>
+        <file>icon/ledgrey32.png</file>
+    </qresource>
+</RCC>
