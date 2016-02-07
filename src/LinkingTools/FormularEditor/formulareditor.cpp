@@ -3,6 +3,8 @@
 
 #include <QDomDocument>
 
+#include "../formular.h"
+
 FormularEditor::FormularEditor(QWidget *parent)
     : QMainWindow(parent), ui(new Ui::FormularEditor) {
     ui->setupUi(this);
