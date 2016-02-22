@@ -1,5 +1,7 @@
 #include "formular.h"
 
+const QStringList Formular::capacities(QStringList() << "8" << "16" << "32");
+
 Formular::Formular()
     : m_data(0), m_size(0) {
 }

@@ -11,6 +11,7 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = ../../../exe/formedit.e
 TEMPLATE = app
 
+LIBS += ../../../lib/libformular.so
 INCLUDEPATH += ../../include
 
 SOURCES += main.cpp\

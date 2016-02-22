@@ -47,8 +47,8 @@ class FieldData {
         FieldData::Dimension getDimension() {return m_dimension;}
         int getSize() {return m_size;}
 
-        static const QStringList fieldTypes;
-        static const QStringList fieldDimensions;
+        static const QStringList types;
+        static const QStringList dimensions;
 
     protected:
         QString m_name;
@@ -88,19 +88,19 @@ class FieldEnumeration : public FieldData {
             public:
                 EnumerationElement();
                 EnumerationElement(QString code, QString acronym, QString description = QString())
-                    : m_code(code), m_acronym(acronym), m_description(description) {}
+                    : m_code(code), m_acronym(acronym), m_transcript(description) {}
 
                 void setCode(QString code) {m_code = code;}
                 void setAcronym(QString acronym) {m_acronym = acronym;}
-                void setDescription(QString description) {m_description = description;}
+                void setTranscript(QString transcript) {m_transcript = transcript;}
 
                 QString getCode() {return m_code;}
                 QString getAcronym() {return m_acronym;}
-                QString getDescription() {return m_description;}
+                QString getTranscript() {return m_transcript;}
             private:
                 QString m_code;
                 QString m_acronym;
-                QString m_description;
+                QString m_transcript;
         };
 
         FieldEnumeration(QString name = QString(), QString description = QString(), FieldData::Type type = Enumeration, FieldData::Dimension dimension = No, int size = 1);

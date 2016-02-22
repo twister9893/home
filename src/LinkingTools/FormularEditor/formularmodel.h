@@ -2,9 +2,16 @@
 #define FORMULARMODEL_H
 
 #include <QAbstractItemModel>
-#include "../fielddata.h"
+#include "fielddata.h"
 
 class FormularModel : public QAbstractItemModel {
+    enum HeaderSection {
+        Size = 0,
+        Type,
+        Name,
+        Description
+    };
+
     public:
         FormularModel(QList<FieldData*> &formularData, QObject *parent);
 
@@ -19,6 +26,8 @@ class FormularModel : public QAbstractItemModel {
         bool removeRows(int row, int count, const QModelIndex &parent = QModelIndex());
         Qt::ItemFlags flags(const QModelIndex &index) const;
         Qt::DropActions supportedDropActions() const;
+
+        static const QStringList formularHeaderSections;
 
     private:
         QList<FieldData*> m_formularData;

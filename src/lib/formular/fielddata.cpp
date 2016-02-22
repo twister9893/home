@@ -1,6 +1,6 @@
 #include "fielddata.h"
 
-const QStringList FieldData::fieldTypes = QStringList() << QString::fromUtf8("Целое")
+const QStringList FieldData::types = QStringList() << QString::fromUtf8("Целое")
                                                         << QString::fromUtf8("Дробное")
                                                         << QString::fromUtf8("Масштабируемое")
                                                         << QString::fromUtf8("Перечисляемое")
@@ -9,7 +9,7 @@ const QStringList FieldData::fieldTypes = QStringList() << QString::fromUtf8("Ц
                                                         << QString::fromUtf8("Строковое")
                                                         << QString::fromUtf8("Неиспользуемое");
 
-const QStringList FieldData::fieldDimensions = QStringList()    << QString::fromUtf8("Метры")
+const QStringList FieldData::dimensions = QStringList()    << QString::fromUtf8("Метры")
                                                                 << QString::fromUtf8("Километры")
                                                                 << QString::fromUtf8("Мили")
                                                                 << QString::fromUtf8("Метры в секунду")

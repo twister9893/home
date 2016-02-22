@@ -4,6 +4,8 @@
 #include <QMainWindow>
 #include "fedit.h"
 
+#include "formularmodel.h"
+
 namespace Ui {
 class FormularEditor;
 }
@@ -19,6 +21,7 @@ private:
     bool writeToFile(QString fileName);
 
     Ui::FormularEditor *ui;
+    FormularModel *m_formularModel;
 };
 
 #endif // FORMULAREDITOR_H

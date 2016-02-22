@@ -8,7 +8,7 @@
 class FileEditor : public QMainWindow {
 public:
     FileEditor(QWidget *parent) : QMainWindow(parent), m_defaultDir("./"), m_isEdited(false) {}
-    virtual ~FileEditor();
+    virtual ~FileEditor() {}
 
     void setDefaultDir(QString defaultDir) {m_defaultDir = defaultDir;}
 

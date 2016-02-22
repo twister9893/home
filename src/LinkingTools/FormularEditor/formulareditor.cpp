@@ -4,7 +4,7 @@
 #include <QDomDocument>
 #include <QDebug>
 
-#include "../fielddata.h"
+#include "formular.h"
 
 FormularEditor::FormularEditor(QWidget *parent)
     : FileEditor(parent), ui(new Ui::FormularEditor) {
@@ -45,7 +45,7 @@ bool FormularEditor::readFromFile(QString fileName) {
         qWarning() << "[Formular editor] Read from file: Bad \"capacity\" attribute. Set default" << defaultCapacity;
         inputCheck = QString::number(defaultCapacity);
     }
-    ui->capacityBox->setCurrentIndex(0);
+    ui->capacityBox->setCurrentIndex(Formular::capacities.indexOf(inputCheck));
 
     inputCheck = domRoot.attribute("description", "_err_");
     if(inputCheck == "_err_")
@@ -115,7 +115,7 @@ bool FormularEditor::readFromFile(QString fileName) {
             case FieldData::Unused: {
                 FieldData *field = new FieldData(name, description, type, dimension, size);
                 m_formularModel->insertRow(m_formularModel->rowCount());
-                m_formularModel->setData(m_formularModel->index(m_formularModel->rowCount() - 1), QVariant((int)field), Qt::EditRole);
+                m_formularModel->setData(m_formularModel->index(m_formularModel->rowCount() - 1), QVariant((long long int)field), Qt::EditRole);
                 break;
             }
             case FieldData::Scalable: {
@@ -149,7 +149,7 @@ bool FormularEditor::readFromFile(QString fileName) {
                 }
                 field->setHighBitSign(inputCheck.toInt());
                 m_formularModel->insertRow(m_formularModel->rowCount());
-                m_formularModel->setData(m_formularModel->index(m_formularModel->rowCount() - 1), QVariant((int)field), Qt::EditRole);
+                m_formularModel->setData(m_formularModel->index(m_formularModel->rowCount() - 1), QVariant((long long int)field), Qt::EditRole);
                 break;
             }
             case FieldData::Enumeration: {
@@ -157,30 +157,35 @@ bool FormularEditor::readFromFile(QString fileName) {
                 QDomElement domEnumerationElement = domField.firstChildElement();
                 uint code = 0;
                 while(!domEnumerationElement.isNull()) {
-                    field->getModel()->insertRow(field->getModel()->rowCount());
+                    FieldEnumeration::EnumerationElement elem;
+
                     inputCheck = domEnumerationElement.attribute("code", "_err_");
                     if(inputCheck == "_err_") {
                         qWarning() << "[Formular editor] Read from file: No \"code\" attribute. Set default" << code;
                         inputCheck = QString::number(code);
                     }
                     ++code;
-                    field->getModel()->setData(field->getModel()->index(field->getModel()->rowCount() - 1, Code), QVariant(inputCheck.toInt()), Qt::EditRole);
+                    elem.setCode(inputCheck);
+
                     inputCheck = domEnumerationElement.attribute("acronym", "_err_");
                     if(inputCheck == "_err_") {
                         qWarning() << "[Formular editor] Read from file: No \"acronym\" attribute. Set empty string";
                         inputCheck = "";
                     }
-                    field->getModel()->setData(field->getModel()->index(field->getModel()->rowCount() - 1, Acronym), QVariant(inputCheck), Qt::EditRole);
+                    elem.setAcronym(inputCheck);
+
                     inputCheck = domEnumerationElement.attribute("transcript", "_err_");
                     if(inputCheck == "_err_") {
                         qWarning() << "[Formular editor] Read from file: No \"transcript\" attribute. Set empty string";
                         inputCheck = "";
                     }
-                    field->getModel()->setData(field->getModel()->index(field->getModel()->rowCount() - 1, Transcript), QVariant(inputCheck), Qt::EditRole);
+                    elem.setTranscript(inputCheck);
                     domEnumerationElement = domEnumerationElement.nextSiblingElement();
+
+                    field->getElements().append(elem);
                 }
                 m_formularModel->insertRow(m_formularModel->rowCount());
-                m_formularModel->setData(m_formularModel->index(m_formularModel->rowCount() - 1), QVariant((int)field), Qt::EditRole);
+                m_formularModel->setData(m_formularModel->index(m_formularModel->rowCount() - 1), QVariant((long long int)field), Qt::EditRole);
                 break;
             }
             case FieldData::Constant: {
@@ -192,7 +197,7 @@ bool FormularEditor::readFromFile(QString fileName) {
                 }
                 field->setValue(inputCheck);
                 m_formularModel->insertRow(m_formularModel->rowCount());
-                m_formularModel->setData(m_formularModel->index(m_formularModel->rowCount() - 1), QVariant((int)field), Qt::EditRole);
+                m_formularModel->setData(m_formularModel->index(m_formularModel->rowCount() - 1), QVariant((long long int)field), Qt::EditRole);
                 break;
             }
         }
@@ -207,8 +212,8 @@ bool FormularEditor::writeToFile(QString fileName) {
     domDocument.insertBefore(xmlNode, domDocument.firstChildElement());
     QDomElement domRoot;
     domRoot = domDocument.createElement("formular");
-    domRoot.setAttribute("capacity", Formular::capacities.at(capacityBox->currentIndex()));
-    domRoot.setAttribute("description", descriptionEdit->toPlainText());
+    domRoot.setAttribute("capacity", Formular::capacities.at(ui->capacityBox->currentIndex()));
+    domRoot.setAttribute("description", ui->descriptionEdit->toPlainText());
     domDocument.appendChild(domRoot);
     for(int i = 0; i < m_formularModel->rowCount(); i++) {
         QDomElement domField = domDocument.createElement("field");
@@ -220,14 +225,14 @@ bool FormularEditor::writeToFile(QString fileName) {
         domField.setAttribute("dimension", FieldData::dimensions.at(field->getDimension()));
         domField.setAttribute("size", field->getSize());
         switch(field->getType()) {
-            case Integer:
-            case Real:
-            case Boolean:
-            case String:
-            case Unused: {
+            case FieldData::Integer:
+            case FieldData::Real:
+            case FieldData::Boolean:
+            case FieldData::String:
+            case FieldData::Unused: {
                 break;
             }
-            case Scalable: {
+            case FieldData::Scalable: {
                 FieldScalable *fieldScalable = static_cast<FieldScalable*>((FieldData*)m_formularModel->data(m_formularModel->index(i), Qt::EditRole).toInt());
                 domField.setAttribute("highOrderBit", fieldScalable->getHighOrderBit());
                 domField.setAttribute("lowerOrderBit", fieldScalable->getLowerOrderBit());
@@ -235,18 +240,18 @@ bool FormularEditor::writeToFile(QString fileName) {
                 domField.setAttribute("highBitSign", fieldScalable->hasHighBitSign());
                 break;
             }
-            case Enumeration: {
+            case FieldData::Enumeration: {
                 FieldEnumeration *fieldEnumeration = static_cast<FieldEnumeration*>((FieldData*)m_formularModel->data(m_formularModel->index(i), Qt::EditRole).toInt());
-                for (int j = 0; j < fieldEnumeration->getModel()->rowCount(); j++) {
+                for (int j = 0; j < fieldEnumeration->getElements().size(); j++) {
                     QDomElement domEnumerationElement = domDocument.createElement("element");
                     domField.appendChild(domEnumerationElement);
-                    domEnumerationElement.setAttribute("code", fieldEnumeration->getModel()->index(j, Code).data(Qt::EditRole).toString());
-                    domEnumerationElement.setAttribute("acronym", fieldEnumeration->getModel()->index(j, Acronym).data(Qt::EditRole).toString());
-                    domEnumerationElement.setAttribute("transcript", fieldEnumeration->getModel()->index(j, Transcript).data(Qt::EditRole).toString());
+                    domEnumerationElement.setAttribute("code", fieldEnumeration->getElements()[j].getCode());
+                    domEnumerationElement.setAttribute("acronym", fieldEnumeration->getElements()[j].getAcronym());
+                    domEnumerationElement.setAttribute("transcript", fieldEnumeration->getElements()[j].getTranscript());
                 }
                 break;
             }
-            case Constant: {
+            case FieldData::Constant: {
                 FieldConstant *fieldConstant = static_cast<FieldConstant*>((FieldData*)m_formularModel->data(m_formularModel->index(i), Qt::EditRole).toInt());
                 domField.setAttribute("value", fieldConstant->getValue());
                 break;

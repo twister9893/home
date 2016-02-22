@@ -1,5 +1,11 @@
 #include "formularmodel.h"
 
+const QStringList FormularModel::formularHeaderSections = QStringList() << QString::fromUtf8("Размер")
+                                                                        << QString::fromUtf8("Тип")
+                                                                        << QString::fromUtf8("Наименование")
+                                                                        << QString::fromUtf8("Описание");
+
+
 FormularModel::FormularModel(QList<FieldData*> &formularData, QObject *parent)
     : QAbstractItemModel(parent) {
     m_formularData = formularData;
@@ -20,8 +26,7 @@ QModelIndex FormularModel::parent(const QModelIndex &/*child*/) const {
 QVariant FormularModel::headerData(int section, Qt::Orientation orientation, int role) const {
     QVariant data = QVariant();
     if(orientation == Qt::Horizontal && role == Qt::DisplayRole) {
-        extern QStringList g_formularHeaderSections;
-        data = QVariant(g_formularHeaderSections.at(section));
+        data = QVariant(formularHeaderSections.at(section));
     }
     else {
         data = QAbstractItemModel::headerData(section, orientation, role);
@@ -34,8 +39,7 @@ int FormularModel::rowCount(const QModelIndex &/*parent*/) const {
 }
 
 int FormularModel::columnCount(const QModelIndex &/*parent*/) const {
-    extern QStringList g_formularHeaderSections;
-    return g_formularHeaderSections.size();
+    return formularHeaderSections.size();
 }
 
 QVariant FormularModel::data(const QModelIndex &index, int role) const {
@@ -43,18 +47,16 @@ QVariant FormularModel::data(const QModelIndex &index, int role) const {
     if(index.isValid()) {
         FieldData *field = m_formularData.at(index.row());
         if(field != NULL) {
-            extern QStringList g_fieldTypes;
-            extern QStringList g_fieldDimensions;
             switch(role) {
                 case Qt::DisplayRole: {
-                    FormularHeaderSection section = (FormularHeaderSection)index.column();
+                    HeaderSection section = (HeaderSection)index.column();
                     switch(section) {
                         case Size: {
                             data = QVariant(field->getSize());
                             break;
                         }
                         case Type: {
-                            data = QVariant(g_fieldTypes.at(field->getType()));
+                            data = QVariant(FieldData::types.at(field->getType()));
                             break;
                         }
                         case Name: {
@@ -69,7 +71,7 @@ QVariant FormularModel::data(const QModelIndex &index, int role) const {
                     break;
                 }
                 case Qt::EditRole: {
-                    data = QVariant((int)field);
+                    data = QVariant((long long int)field);
                     break;
                 }
                 case Qt::ToolTipRole: {
@@ -81,20 +83,20 @@ QVariant FormularModel::data(const QModelIndex &index, int role) const {
                                                             "%additional"
                                                             );
                     toolTip.replace("%size", QString::number(field->getSize()));
-                    toolTip.replace("%type", g_fieldTypes.at(field->getType()));
-                    toolTip.replace("%dimension", g_fieldDimensions.at(field->getDimension()));
+                    toolTip.replace("%type", FieldData::types.at(field->getType()));
+                    toolTip.replace("%dimension", FieldData::dimensions.at(field->getDimension()));
                     toolTip.replace("%name", field->getName());
                     toolTip.replace("%description", field->getDescription());
                     switch(field->getType()) {
-                        case Integer:
-                        case Real:
-                        case Boolean:
-                        case String:
-                        case Unused: {
+                        case FieldData::Integer:
+                        case FieldData::Real:
+                        case FieldData::Boolean:
+                        case FieldData::String:
+                        case FieldData::Unused: {
                             toolTip.replace("%additional", QString());
                             break;
                         }
-                        case Scalable: {
+                        case FieldData::Scalable: {
                             FieldScalable *fieldScalable = static_cast<FieldScalable*>(field);
                             QString additional = QString::fromUtf8( "\n\nЦена %kind разряда:\t%order\n"
                                                                     "%sign"
@@ -118,18 +120,18 @@ QVariant FormularModel::data(const QModelIndex &index, int role) const {
                             toolTip.replace("%additional", additional);
                             break;
                         }
-                        case Enumeration: {
+                        case FieldData::Enumeration: {
                             FieldEnumeration *fieldEnumeration = static_cast<FieldEnumeration*>(field);
                             QString additional = "\n";
-                            for(int i = 0; i < fieldEnumeration->getModel()->rowCount(); i++) {
+                            for(int i = 0; i < fieldEnumeration->getElements().size(); i++) {
                                 additional.append("\n%code - %transcript");
-                                additional.replace("%code", fieldEnumeration->getModel()->index(i, Code).data(Qt::DisplayRole).toString());
-                                additional.replace("%transcript", fieldEnumeration->getModel()->index(i, Transcript).data(Qt::DisplayRole).toString());
+                                additional.replace("%code", fieldEnumeration->getElements()[i].getCode());
+                                additional.replace("%transcript", fieldEnumeration->getElements()[i].getTranscript());
                             }
                             toolTip.replace("%additional", additional);
                             break;
                         }
-                        case Constant: {
+                        case FieldData::Constant: {
                             FieldConstant *fieldConstant = static_cast<FieldConstant*>(field);
                             QString additional = QString::fromUtf8("\n\nКонстанта %constant");
                             additional.replace("%constant", fieldConstant->getValue());
@@ -164,23 +166,23 @@ bool FormularModel::setData(const QModelIndex &index, const QVariant &value, int
         FieldData *field = m_formularData.at(index.row());
         if(field != NULL) {
             switch(field->getType()) {
-                case Integer:
-                case Real:
-                case Boolean:
-                case String:
-                case Unused: {
+                case FieldData::Integer:
+                case FieldData::Real:
+                case FieldData::Boolean:
+                case FieldData::String:
+                case FieldData::Unused: {
                     delete field;
                     break;
                 }
-                case Scalable: {
+                case FieldData::Scalable: {
                     delete static_cast<FieldScalable*>(field);
                     break;
                 }
-                case Enumeration: {
+                case FieldData::Enumeration: {
                     delete static_cast<FieldEnumeration*>(field);
                     break;
                 }
-                case Constant: {
+                case FieldData::Constant: {
                     delete static_cast<FieldConstant*>(field);
                     break;
                 }
@@ -212,23 +214,23 @@ bool FormularModel::removeRows(int row, int count, const QModelIndex &parent) {
             FieldData *field = m_formularData.takeAt(row);
             if(field != NULL) {
                 switch(field->getType()) {
-                    case Integer:
-                    case Real:
-                    case Boolean:
-                    case String:
-                    case Unused: {
+                    case FieldData::Integer:
+                    case FieldData::Real:
+                    case FieldData::Boolean:
+                    case FieldData::String:
+                    case FieldData::Unused: {
                         delete field;
                         break;
                     }
-                    case Scalable: {
+                    case FieldData::Scalable: {
                         delete static_cast<FieldScalable*>(field);
                         break;
                     }
-                    case Enumeration: {
+                    case FieldData::Enumeration: {
                         delete static_cast<FieldEnumeration*>(field);
                         break;
                     }
-                    case Constant: {
+                    case FieldData::Constant: {
                         delete static_cast<FieldConstant*>(field);
                         break;
                     }
@@ -236,8 +238,7 @@ bool FormularModel::removeRows(int row, int count, const QModelIndex &parent) {
             }
         }
         endRemoveRows();
-        extern QStringList g_formularHeaderSections;
-        emit dataChanged(index(row), index(row + count - 1, g_formularHeaderSections.size() - 1));
+        emit dataChanged(index(row), index(row + count - 1, formularHeaderSections.size() - 1));
         return true;
     }
     return false;

@@ -22,6 +22,8 @@ public:
     int getSize() {return m_size;}
     QVariant getValue(QString fieldName);
 
+    static const QStringList capacities;
+
 private:
     int getFieldPosition(QString name);
 
