@@ -7,6 +7,7 @@
   <style name="SearchResult" foreground="#000000" background="#ffef0b"/>
   <style name="SearchScope" foreground="#000000" background="#f8fafc"/>
   <style name="Parentheses" foreground="#ffff00" background="#4e4e8f"/>
+  <style name="ParenthesesMismatch" foreground="#000000" background="#ff00ff"/>
   <style name="CurrentLine" foreground="#000000" background="#121214"/>
   <style name="CurrentLineNumber" foreground="#b1b1b1" bold="true"/>
   <style name="Occurrences" foreground="#000000" background="#616161"/>
@@ -14,13 +15,14 @@
   <style name="Occurrences.Rename" foreground="#000000" background="#ff6464"/>
   <style name="Number" foreground="#f0ad6d"/>
   <style name="String" foreground="#ffcd8b" background="#404040"/>
-  <style name="Type" foreground="#b1ff67"/>
+  <style name="Type" foreground="#d5ff53"/>
   <style name="Local"/>
   <style name="Field" bold="true"/>
   <style name="Static" foreground="#cb6ecb"/>
   <style name="VirtualMethod" italic="true"/>
   <style name="Function"/>
-  <style name="Keyword" foreground="#fdff55" bold="true"/>
+  <style name="Keyword" foreground="#fef08d" bold="true"/>
+  <style name="PrimitiveType" foreground="#fef08d" bold="true"/>
   <style name="Operator" foreground="#cfbfad"/>
   <style name="Preprocessor" foreground="#409090"/>
   <style name="Label" foreground="#e76000"/>
@@ -50,4 +52,9 @@
   <style name="DiffSourceChar" background="#c34141"/>
   <style name="DiffDestLine" background="#277027"/>
   <style name="DiffDestChar" background="#339d33"/>
+  <style name="LogChangeLine" foreground="#c00000"/>
+  <style name="Warning" underlineColor="#ffbe00" underlineStyle="SingleUnderline"/>
+  <style name="WarningContext" underlineColor="#ffbe00" underlineStyle="DotLine"/>
+  <style name="Error" underlineColor="#ff0000" underlineStyle="SingleUnderline"/>
+  <style name="ErrorContext" underlineColor="#ff0000" underlineStyle="DotLine"/>
 </style-scheme>
