@@ -4,7 +4,6 @@ QT += qml quick widgets
 CONFIG += c++11
 
 SOURCES += main.cpp \
-    glwidget.cpp \
     glcontext.cpp
 
 RESOURCES += qml.qrc
@@ -16,5 +15,4 @@ QML_IMPORT_PATH =
 include(deployment.pri)
 
 HEADERS += \
-    glwidget.h \
     glcontext.h
