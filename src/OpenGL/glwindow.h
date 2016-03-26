@@ -1,13 +1,13 @@
 #ifndef GLWINDOW_H
 #define GLWINDOW_H
 
-//#include <QOpenGLWindow>
-#include <QGLWidget>
+#include <QOpenGLWindow>
+//#include <QGLWidget>
 #include <QOpenGLFramebufferObject>
 
-class GlWindow : public QGLWidget {
+class GlWindow : public QOpenGLWindow {
 public:
-    GlWindow (QWidget * parent = 0, const QGLWidget * shareWidget = 0, Qt::WindowFlags f = 0);
+    GlWindow (UpdateBehavior updateBehavior = NoPartialUpdate, QWindow * parent = 0);
 
 protected:
     void initializeGL();
@@ -19,7 +19,7 @@ protected:
     void mouseMoveEvent(QMouseEvent *event);
     void mousePressEvent(QMouseEvent *event);
     void wheelEvent(QWheelEvent * event);
-
+    void timerEvent(QTimerEvent *);
 private:
     void loadMap();
 

@@ -6,14 +6,17 @@
 
 #include "glwindow.h"
 
-GlWindow::GlWindow (QWidget * parent, const QGLWidget * shareWidget, Qt::WindowFlags f)
-    : QGLWidget(parent, shareWidget, f) {
+GlWindow::GlWindow (UpdateBehavior updateBehavior, QWindow *parent)
+    : QOpenGLWindow(updateBehavior, parent) {
     scale=16.0;
     angle=0.0;
     mangle=0.0;
     posX=0.0;
     posY=0.0;
     m_mapFbo=0;
+
+    setWidth(512);
+    setHeight(512);
 }
 
 void GlWindow::resizeGL(int w, int h) {
@@ -29,7 +32,7 @@ void GlWindow::resizeGL(int w, int h) {
 }
 
 void GlWindow::paintGL() {
-//    qDebug() << "render" << m_windowSize.width() << m_windowSize.height();
+//    qDebug() << "render";
 
     if(!m_mapFbo)
     {
@@ -138,6 +141,11 @@ void GlWindow::wheelEvent(QWheelEvent * event) {
 //    m_globalTransform.scale(factor, factor);
 //    repaint();
     //    event->accept();
+}
+
+void GlWindow::timerEvent(QTimerEvent *e)
+{
+
 }
 
 void GlWindow::loadMap()
