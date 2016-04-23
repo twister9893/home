@@ -1,7 +1,6 @@
 #ifndef _GEOPOINT_H_
 #define _GEOPOINT_H_
 
-#include <QPointF>
 #include <QDebug>
 #include "sysmath.h"
 
@@ -13,18 +12,13 @@ public:
     };
 
     GeoPoint()
-        : m_x(0.0),m_y(0.0),m_f(0.0),m_l(0.0), m_reperF(0.0),m_reperL(0.0), m_projection(Gauss) {}
-    GeoPoint(qreal reperF, qreal reperL, Projection projection=Gauss)
-        : m_x(0.0),m_y(0.0),m_f(0.0),m_l(0.0), m_reperF(reperF),m_reperL(reperL), m_projection(projection) {}
-    GeoPoint(qreal x, qreal y, qreal reperF, qreal reperL, Projection projection=Gauss)
-        : m_x(0.0),m_y(0.0),m_f(0.0),m_l(0.0), m_reperF(reperF),m_reperL(reperL), m_projection(projection) {
-        if(!setXY(x,y))
+        : m_x(0.0),m_y(0.0),m_f(0.0),m_l(0.0),m_altitudo(0.0), m_reperF(0.0),m_reperL(0.0), m_projection(Gauss) {}
+//    GeoPoint(qreal reperF, qreal reperL, Projection projection=Gauss)
+//        : m_x(0.0),m_y(0.0),m_f(0.0),m_l(0.0),m_altitudo(0.0), m_reperF(reperF),m_reperL(reperL), m_projection(projection) {}
+    GeoPoint(qreal x, qreal y, qreal z=0.0, qreal reperF=0.0, qreal reperL=0.0, Projection projection=Gauss)
+        : m_x(0.0),m_y(0.0),m_f(0.0),m_l(0.0),m_altitudo(z), m_reperF(reperF),m_reperL(reperL), m_projection(projection) {
+        if(!setXYZ(x,y,z))
             qCritical() << "GeoPoint: error in XY initialization";
-    }
-    GeoPoint(qreal f, qreal l, qreal reperF, qreal reperL, Projection projection=Gauss)
-        : m_x(0.0),m_y(0.0),m_f(0.0),m_l(0.0), m_reperF(reperF), m_reperL(reperL), m_projection(projection) {
-        if(!setFL(f,l))
-            qCritical() << "GeoPoint: error in FL initialization";
     }
 
     bool setProjection(Projection projection) {
@@ -36,7 +30,8 @@ public:
     }
     bool setReper(qreal f, qreal l) {
         if(updateXY(f,l,m_projection)) {
-            m_reper=reper;
+            m_reperF=f;
+            m_reperL=l;
             return true;
         }
         return false;
@@ -56,13 +51,14 @@ public:
         }
         return false;
     }
-    bool setXY(qreal x, qreal y) {
-        if(updateFL(m_reperF,m_reperL,m_projection)) {
+    bool setXYZ(qreal x, qreal y, qreal z=0.0) {
+//        if(updateFL(m_reperF,m_reperL,m_projection)) {
             m_x=x;
             m_y=y;
+            m_altitudo=z;
             return true;
-        }
-        return false;
+//        }
+//        return false;
     }
 
     bool setF(qreal f) {
@@ -79,22 +75,26 @@ public:
         }
         return false;
     }
-    bool setFL(qreal f, qreal l) {
+    bool setFLA(qreal f, qreal l, qreal altitudo=0.0) {
         if(updateXY(m_reperF,m_reperL,m_projection)) {
             m_f=f;
             m_l=l;
+            m_altitudo=altitudo;
             return true;
         }
         return false;
     }
+    void setA(qreal altitudo) {m_altitudo = altitudo;}
 
-    Projection projection() {return m_projection;}
-    qreal reperF() {return m_reperF;}
-    qreal reperL() {return m_reperL;}
-    qreal x() {return m_x;}
-    qreal y() {return m_y;}
-    qreal f() {return m_f;}
-    qreal l() {return m_l;}
+    Projection projection() const {return m_projection;}
+    qreal reperF() const {return m_reperF;}
+    qreal reperL() const {return m_reperL;}
+    qreal x() const {return m_x;}
+    qreal y() const {return m_y;}
+    qreal z() const {return m_altitudo;}
+    qreal f() const {return m_f;}
+    qreal l() const {return m_l;}
+    qreal altitudo() const {return m_altitudo;}
 
 private:
     bool updateXY(qreal reperF, qreal reperL, Projection projection) {
@@ -122,6 +122,7 @@ private:
     qreal m_reperF,m_reperL;
     qreal m_f,m_l;
     qreal m_x,m_y;
+    qreal m_altitudo;
 };
 
 #endif //_GEOPOINT_H_

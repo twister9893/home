@@ -1,9 +1,11 @@
 #ifndef TSICORE_H
 #define TSICORE_H
 
+#include <QOpenGLWindow>
 #include <QPointF>
+#include "tsigraphicsmanager.h"
 
-class TsiCore {
+class TsiCore : public QOpenGLWindow {
     Q_PROPERTY(Projection projection READ getProjection WRITE setProjection NOTIFY projectionChanged)
 
     Q_PROPERTY(float scale READ getScale WRITE setScale NOTIFY scaleChanged)
@@ -21,6 +23,9 @@ class TsiCore {
     Q_PROPERTY(bool loupeVisibility READ getLoupeVisibility WRITE setLoupeVisibility NOTIFY loupeVisibilityChanged)
 
 public:
+    TsiCore();
+    ~TsiCore();
+
     float getScale() const {
         return m_scale;
     }
@@ -64,6 +69,8 @@ public:
     bool getLoupeVisibility() const {
         return m_loupeVisibility;
     }
+
+    TsiGraphicsManager* graphicsManager() {return m_graphicsManager;}
 
 public slots:
     void setScale(float scale) {
@@ -167,7 +174,14 @@ signals:
     void limbVisibilityChanged(bool limbVisibility);
     void loupeVisibilityChanged(bool loupeVisibility);
 
+protected:
+    void initializeGL();
+    void resizeGL(int w, int h);
+    void paintGL();
+
 private:
+    TsiGraphicsManager *m_graphicsManager;
+
     float m_scale;
     QPointF m_offset;
     float m_angle;
