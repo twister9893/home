@@ -1,16 +1,16 @@
 #ifndef TSICORE_H
 #define TSICORE_H
 
-#include <QOpenGLWindow>
+#include <QGLWidget>
 #include <QPointF>
 #include "tsigraphicsmanager.h"
 
-class TsiCore : public QOpenGLWindow {
+class TsiCore : public QGLWidget {
     Q_PROPERTY(Projection projection READ getProjection WRITE setProjection NOTIFY projectionChanged)
 
-    Q_PROPERTY(float scale READ getScale WRITE setScale NOTIFY scaleChanged)
+    Q_PROPERTY(qreal scale READ getScale WRITE setScale NOTIFY scaleChanged)
     Q_PROPERTY(QPointF offset READ getOffset WRITE setOffset NOTIFY offsetChanged)
-    Q_PROPERTY(float angle READ getAngle WRITE setAngle NOTIFY angleChanged)
+    Q_PROPERTY(qreal angle READ getAngle WRITE setAngle NOTIFY angleChanged)
 
     Q_PROPERTY(bool relative READ isRelative WRITE setRelative NOTIFY relativeChanged)
     Q_PROPERTY(bool nose READ isNose WRITE setNose NOTIFY noseChanged)
@@ -26,7 +26,7 @@ public:
     TsiCore();
     ~TsiCore();
 
-    float getScale() const {
+    qreal getScale() const {
         return m_scale;
     }
 
@@ -34,7 +34,7 @@ public:
         return m_offset;
     }
 
-    float getAngle() const {
+    qreal getAngle() const {
         return m_angle;
     }
 
@@ -73,7 +73,7 @@ public:
     TsiGraphicsManager* graphicsManager() {return m_graphicsManager;}
 
 public slots:
-    void setScale(float scale) {
+    void setScale(qreal scale) {
         if (m_scale == scale)
             return;
 
@@ -89,7 +89,7 @@ public slots:
         emit offsetChanged(offset);
     }
 
-    void setAngle(float angle) {
+    void setAngle(qreal angle) {
         if (m_angle == angle)
             return;
 
@@ -162,9 +162,9 @@ public slots:
     }
 
 signals:
-    void scaleChanged(float scale);
+    void scaleChanged(qreal scale);
     void offsetChanged(QPointF offset);
-    void angleChanged(float angle);
+    void angleChanged(qreal angle);
     void relativeChanged(bool relative);
     void noseChanged(bool nose);
     void nightChanged(bool night);
@@ -182,9 +182,9 @@ protected:
 private:
     TsiGraphicsManager *m_graphicsManager;
 
-    float m_scale;
+    qreal m_scale;
     QPointF m_offset;
-    float m_angle;
+    qreal m_angle;
     bool m_relative;
     bool m_nose;
     bool m_night;

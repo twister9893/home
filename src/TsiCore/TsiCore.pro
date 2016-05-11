@@ -1,6 +1,4 @@
-QT       += core gui xml
-
-greaterThan(QT_MAJOR_VERSION, 4): QT += core gui
+QT       += core gui xml opengl
 
 TARGET = ../../exe/tsicore.e
 TEMPLATE = app
@@ -21,7 +19,22 @@ HEADERS += \
     tsinotificationmanager.h \
     tsiprimarymanager.h \
     tsitargetsmanager.h \
-    tsitoolsmanager.h
+    tsitoolsmanager.h \
+    ito_object.h \
+    style.h \
+    line.h \
+    geo.h \
+    rect.h \
+    ito_point.h \
+    point.h \
+    ito_primitive.h \
+    ito_line.h \
+    ito_rect.h \
+    ito_polyline.h \
+    ito_polygon.h \
+    ito_ellipse.h \
+    ito_arc.h \
+    ito_sector.h
 
 SOURCES += \
     libCoord.cpp \

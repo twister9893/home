@@ -3,6 +3,9 @@
 TsiCore::TsiCore()
     : m_graphicsManager(new TsiGraphicsManager())
 {
+//    setWidth(512);
+//    setHeight(512);
+    setGeometry(100,100,512,512);
 }
 
 TsiCore::~TsiCore()
@@ -30,6 +33,13 @@ void TsiCore::resizeGL(int w, int h)
 void TsiCore::paintGL()
 {
     glClear(GL_COLOR_BUFFER_BIT);
+
+//    glColor3f(0.5,0.0,0.0);
+//    glBegin(GL_TRIANGLES);
+//    glVertex2f(-256,-256);
+//    glVertex2f(0.0,256);
+//    glVertex2f(256,-256);
+//    glEnd;
 
     m_graphicsManager->process();
 }
