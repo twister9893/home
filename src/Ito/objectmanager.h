@@ -28,7 +28,7 @@ private:
 //    void drawTarget(QPainter *painter, const Target & target);
     void drawPrimitive(QPainter *painter, Primitive *primitive);
 
-    QMap<qint64,*Object> objects;
+    QMap<qint64,Object*> objects;
     State coreState;
 };
 

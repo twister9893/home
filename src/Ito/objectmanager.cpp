@@ -43,6 +43,8 @@ void ObjectManager::draw(QPainter *painter)
             case Object::Primitive:
                 drawPrimitive(painter, static_cast<Primitive*>(*i));
                 break;
+            default:
+                break;
         }
     }
 }
@@ -71,6 +73,8 @@ void ObjectManager::drawPrimitive(QPainter *painter, Primitive *primitive)
             painter->drawEllipse(primitive->bounding());
             break;
         }
+        default:
+            break;
     }
     painter->restore();
 }

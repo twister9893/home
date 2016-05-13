@@ -8,10 +8,10 @@ Core::Core(QObject *parent)
 
 void Core::setState(State state)
 {
-    if (this->state == state)
+    if (this->_state == state)
         return;
 
-    this->state = state;
+    this->_state = state;
     emit stateChanged(state);
 }
 

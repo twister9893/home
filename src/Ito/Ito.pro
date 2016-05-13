@@ -1,3 +1,5 @@
+QT += core gui opengl
+
 HEADERS += \
     core.h \
     object.h \
@@ -5,7 +7,8 @@ HEADERS += \
     primitive.h \
     point.h \
     ellipse.h \
-    state.h
+    state.h \
+    glwindow.h
 
 SOURCES += \
     core.cpp \
@@ -13,4 +16,6 @@ SOURCES += \
     objectmanager.cpp \
     primitive.cpp \
     point.cpp \
-    ellipse.cpp
+    ellipse.cpp \
+    glwindow.cpp \
+    main.cpp

@@ -13,11 +13,11 @@ public:
         : Primitive(id,anchor),
           point(point) {}
 
-    void setPos(const QPointF &pos) {this->point=point;}
+    void setPos(const QPointF &pos) {this->point=pos;}
 
     QPointF pos() const {return this->point;}
     QRectF bounding() const {return QRectF();}
-    PrimitiveType primitiveType() {return Point;}
+    PrimitiveType primitiveType() {return Primitive::Point;}
 
 private:
     QPointF point;
