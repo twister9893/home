@@ -11,7 +11,7 @@ class Core : public QObject
 public:
     explicit Core(QObject *parent = 0);
 
-    void setState(State _state);
+    void setState(State state);
     State state() const {return _state;}
 
     /**
@@ -21,15 +21,14 @@ public:
      */
     void process(QPainter *painter);
 
-
-    void addEllipse(qreal x, qreal y, qreal width, qreal height) {
-        Ellipse *ellipse = new Ellipse(1, QPointF(x,y), QRectF(0.0,0.0,width,height));
+    void addEllipse(qreal x, qreal y, qreal width, qreal height, bool scalable) {
+        Ellipse *ellipse = new Ellipse(objectManager->objectCount(), QRectF(x,y,width,height));
+        ellipse->setScalable(scalable);
         objectManager->addObject(ellipse);
     }
 
-
 signals:
-    void stateChanged(const State &_state);
+    void stateChanged(const State &state);
 
 private:
     ObjectManager *objectManager;

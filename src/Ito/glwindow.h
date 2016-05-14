@@ -17,13 +17,14 @@ protected:
 //    void resizeEvent(QResizeEvent *e) {
 //    }
 
-    void paintEvent(QPaintEvent *) {
-        QPainter painter(this);
-        core->process(&painter);
-    }
+    void paintEvent(QPaintEvent *);
+    void mouseMoveEvent(QMouseEvent *event);
+    void mousePressEvent(QMouseEvent *event);
+    void wheelEvent(QWheelEvent * event);
 
 private:
-    Core *core;
+    Core *_core;
+    QPointF _lastClick;
 };
 
 #endif // GLWINDOW_H

@@ -1,14 +1,9 @@
 #include "objectmanager.h"
 
-ObjectManager::ObjectManager()
-{
-
-}
-
 bool ObjectManager::addObject(Object *object)
 {
-    if(this->objects.find(object->id()) == this->objects.end()) {
-        this->objects.insert(object->id(), object);
+    if(_objects.find(object->id()) == _objects.end()) {
+        _objects.insert(object->id(), object);
         return true;
     } else {
         return false;
@@ -17,8 +12,8 @@ bool ObjectManager::addObject(Object *object)
 
 bool ObjectManager::removeObject(qint64 id)
 {
-    if(this->objects.find(id) != this->objects.end()) {
-        this->objects.remove(id);
+    if(_objects.find(id) != _objects.end()) {
+        _objects.remove(id);
         return true;
     } else {
         return false;
@@ -28,14 +23,14 @@ bool ObjectManager::removeObject(qint64 id)
 Object* ObjectManager::object(qint64 id, bool *ok) const
 {
     if(ok) {
-        *ok = this->objects.find(id) != this->objects.end();
+        *ok = _objects.find(id) != _objects.end();
     }
-    return this->objects.value(id, NULL);
+    return _objects.value(id, NULL);
 }
 
 void ObjectManager::draw(QPainter *painter)
 {
-    for(QMap< qint64,Object* >::iterator i = this->objects.begin(); i != this->objects.end(); ++i) {
+    for(QMap< qint64,Object* >::iterator i = _objects.begin(); i != _objects.end(); ++i) {
         if(!(*i)->isVisible())
             continue;
 
@@ -51,18 +46,24 @@ void ObjectManager::draw(QPainter *painter)
 
 void ObjectManager::drawPrimitive(QPainter *painter, Primitive *primitive)
 {
+    //TODO ANCHORS
+
+
     if(!painter || !primitive)
         return;
 
     painter->save();
     painter->setPen(primitive->pen());
     painter->setBrush(primitive->brush());
+
+//    painter->translate((qreal)(painter->device()->width()) / 2, (qreal)(painter->device()->height()) / 2);
+    qreal s = (qreal)( qMin(painter->device()->width(), painter->device()->height())) / _coreState.scale;
     if(primitive->isScalable()) {
-        qreal sx = (qreal)(painter->device()->width()) / coreState.scale;
-        qreal sy = (qreal)(painter->device()->height()) / coreState.scale;;
-        painter->scale(sx,sy);
+        painter->scale(s,s);
+        painter->translate(_coreState.offset);
+    } else {
+        painter->translate(_coreState.offset * s);
     }
-    painter->translate(coreState.offset);
 
     switch(primitive->primitiveType()) {
         case Primitive::Point: {
@@ -78,4 +79,3 @@ void ObjectManager::drawPrimitive(QPainter *painter, Primitive *primitive)
     }
     painter->restore();
 }
-
