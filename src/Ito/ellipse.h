@@ -13,7 +13,7 @@ public:
         : Primitive(id,anchor),
           _rectangle(rectangle) {}
 
-    virtual void setPos(const QPointF &pos) {_rectangle.moveTo(pos);}
+    virtual void setPos(const QPointF &pos) {_rectangle.moveCenter(pos);}
     void setRectangle(const QRectF &rectangle) {_rectangle=rectangle;}
 
     virtual QPointF pos() const {return _rectangle.center();}

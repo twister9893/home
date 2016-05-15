@@ -13,24 +13,25 @@ public:
 
     Object(qint64 id)
         : _id(id),
-          _anchor(0),
-          visible(true) {}
+          _anchor(-1),
+          _visible(true) {}
 
     Object(qint64 id, qint64 anchor)
         : _id(id),
           _anchor(anchor),
-          visible(true) {}
+          _visible(true) {}
 
     virtual ~Object() {}
 
 //    void setId(qint64 id) {this->id=id;}
     void setAnchor(qint64 id) {this->_anchor=id;}
-    void setVisible(bool visible) {this->visible=visible;}
+    void setVisible(bool visible) {this->_visible=visible;}
     virtual void setPos(const QPointF &pos)=0;
 
     qint64 id() const {return _id;}
     qint64 anchor() const {return _anchor;}
-    bool isVisible() const {return visible;}
+    bool hasAnchor() const {return _anchor >= 0;}
+    bool isVisible() const {return _visible;}
     virtual QPointF pos() const=0;
     virtual ObjectType objectType() const=0;
     virtual QRectF bounding() const=0;
@@ -38,7 +39,7 @@ public:
 private:
     qint64 _id;
     qint64 _anchor;
-    bool visible;
+    bool _visible;
 };
 
 #endif // OBJECT_H

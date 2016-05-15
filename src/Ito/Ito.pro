@@ -8,7 +8,10 @@ HEADERS += \
     point.h \
     ellipse.h \
     state.h \
-    glwindow.h
+    glwindow.h \
+    target.h \
+    objectsource.h \
+    markingmanager.h
 
 SOURCES += \
     core.cpp \
@@ -18,4 +21,7 @@ SOURCES += \
     point.cpp \
     ellipse.cpp \
     glwindow.cpp \
-    main.cpp
+    main.cpp \
+    target.cpp \
+    objectsource.cpp \
+    markingmanager.cpp
