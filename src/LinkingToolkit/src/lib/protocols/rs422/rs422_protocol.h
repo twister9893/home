@@ -10,7 +10,8 @@ class Rs422Protocol : public QObject, public Protocol
     Q_OBJECT
     Q_INTERFACES(Protocol)
 public:
-    explicit Rs422Protocol(QObject *parent = 0);
+    explicit Rs422Protocol(QObject *parent = 0)
+        : QObject(parent) {}
 
     QString name() {return "Rs-422";}
     QString configure();

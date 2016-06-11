@@ -1,0 +1,16 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE config>
+<config protocol="Rs-422" name="">
+    <param description="Скорость передачи данных" type="enumeration" name="baudRate">
+        <value>9600</value>
+        <value>19200</value>11</param>
+    <param description="Контроль четности" type="boolean" name="fParity">01</param>
+    <param description="Схема контроля четности" type="enumeration" name="parity">
+        <value>EVENPARITY</value>
+        <value>MARKPARITY</value>
+        <value>NOPARITY</value>
+        <value>ODDPARITY</value>
+        <value>SPACEPARITY</value>02</param>
+    <param description="Двоичный режим обмена" type="boolean" name="fBinary">10</param>
+    <param description="Число информационных бит" type="integer" min="4" name="byteSize" max="8">86</param>
+</config>

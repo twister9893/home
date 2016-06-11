@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['protocol',['Protocol',['../classProtocol.html',1,'']]]
+  ['networkconfigurator',['NetworkConfigurator',['../classNetworkConfigurator.html',1,'']]]
 ];

@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['rs422protocol',['Rs422Protocol',['../classRs422Protocol.html',1,'']]]
+  ['protocol',['Protocol',['../classProtocol.html',1,'']]]
 ];

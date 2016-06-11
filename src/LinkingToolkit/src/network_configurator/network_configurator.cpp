@@ -7,62 +7,76 @@
 #include <QDebug>
 
 NetworkConfigurator::NetworkConfigurator(QWidget *parent) :
-    QWidget(parent)
+    FileEditor(parent)
 {
     setupUi(this);
 
-    connect(protocolCombo, SIGNAL(currentIndexChanged(int)), this, SLOT(showConfig(int)));
+    connect(openButton, SIGNAL(clicked()), this, SLOT(openConfig()));
+    connect(saveButton, SIGNAL(clicked()), this, SLOT(saveConfig()));
+    connect(quitButton, SIGNAL(clicked()), this, SLOT(quit()));
+    connect(protocolCombo, SIGNAL(currentIndexChanged(int)), this, SLOT(setConfigDefault(int)));
 
-    loadProtocols();
+    loadPlugins();
 }
 
-void NetworkConfigurator::showConfig(int id)
+void NetworkConfigurator::openConfig()
 {
-    //Очистка области параметров
-    QLayoutItem *item;
-    while( (item = parametersLayout->itemAt(0)) )
-    {
-            parametersLayout->removeItem(item);
-            parametersLayout->removeWidget(item->widget());
-            delete item->widget();
-            delete item;
-//            parametersLayout->update();
-    }
-
-    //Загрузка конфигурационного файла
-    QDomDocument config;
-    QString errorMsg;
-    int errorLine;
-    int errorColumn;
-    if(!config.setContent(_protocols.at(id)->configure(), &errorMsg, &errorLine, &errorColumn)) {
-        qCritical() << "Can't read config for" << _protocols.at(id)->name();
-        qCritical() << "Line:" << errorLine << "Colunm:" << errorColumn;
-        qCritical() << errorMsg;
-
-        QLabel *errorLabel = new QLabel(parametersGroup);
-        errorLabel->setText(QString::fromUtf8("Ошибка чтения конфигурационного файла"));
-        parametersLayout->addWidget(errorLabel);
-        return;
-    }
-
-    //Заполнение области параметров
-    QDomElement domRoot = config.documentElement();
-    if(domRoot.tagName() != "config") {
-        qCritical() << "Can't read config, incorrect root tag name" << domRoot.tagName();
-        return;
-    }
-
-    QDomElement param = domRoot.firstChildElement();
-    while(!param.isNull()) {
-        QHBoxLayout *row = new QHBoxLayout();
-        row->addWidget(labelFor(param), 2);
-        row->addWidget(editorFor(param), 1);
-        param = param.nextSiblingElement();
-        parametersLayout->addLayout(row);
-    }
+    open();
 }
 
-void NetworkConfigurator::loadProtocols()
+void NetworkConfigurator::saveConfig()
+{
+    save();
+}
+
+void NetworkConfigurator::quit()
+{
+    close();
+    exit(0);
+}
+
+void NetworkConfigurator::setConfigDefault(int id)
+{
+    constructWindow(_protocols.at(id)->configure());
+}
+
+bool NetworkConfigurator::readFromFile(const QString &fileName)
+{
+    QFile file(fileName);
+    if(!file.open(QIODevice::ReadOnly))
+        return false;
+    QString xml(file.readAll());
+    file.close();
+    constructWindow(xml);
+    return true;
+}
+
+bool NetworkConfigurator::writeToFile(const QString &fileName)
+{
+    QDomElement domRoot = _config.documentElement();
+    QDomElement param = domRoot.firstChildElement();
+    int num=0;
+    while(!param.isNull()) {
+        setValue(_config, param, num);
+        num++;
+        param = param.nextSiblingElement();
+    }
+
+    QFile file(fileName);
+    if(!file.open(QIODevice::WriteOnly))
+            return false;
+    QTextStream st(&file);
+    _config.save(st, 4);
+    file.close();
+    return true;
+}
+
+void NetworkConfigurator::clear()
+{
+
+}
+
+void NetworkConfigurator::loadPlugins()
 {
     qDebug() << "Loading plugins...";
     _protocols.clear();
@@ -89,7 +103,65 @@ void NetworkConfigurator::loadProtocols()
     }
 }
 
-QWidget *NetworkConfigurator::editorFor(QDomElement param)
+void NetworkConfigurator::constructWindow(const QDomDocument &config)
+{
+    clearWindow();
+
+    if(config.isNull()) {
+        qCritical() << "Can't construct window, bad config";
+        return;
+    }
+
+    QDomElement domRoot = config.documentElement();
+    if(domRoot.tagName() != "config") {
+        qCritical() << "Can't construct window from config, incorrect root tag name" << domRoot.tagName();
+        return;
+    }
+
+    QDomElement param = domRoot.firstChildElement();
+    while(!param.isNull()) {
+        QHBoxLayout *row = new QHBoxLayout();
+        row->addWidget(labelFor(param), 2);
+        row->addWidget(editorFor(param), 1);
+        param = param.nextSiblingElement();
+        parametersLayout->addLayout(row);
+    }
+    _config = config;
+}
+
+void NetworkConfigurator::constructWindow(const QString &xml) {
+    QDomDocument config = xmlStringToDom(xml);
+    constructWindow(config);
+}
+
+void NetworkConfigurator::clearWindow()
+{
+    QLayoutItem *item;
+    while( (item = parametersLayout->itemAt(0)) )
+    {
+            parametersLayout->removeItem(item);
+            parametersLayout->removeWidget(item->widget());
+            delete item->widget();
+            delete item;
+            parametersLayout->update();
+    }
+}
+
+QDomDocument NetworkConfigurator::xmlStringToDom(const QString &xml)
+{
+    QDomDocument config;
+    QString errorMsg;
+    int errorLine;
+    int errorColumn;
+    if(!config.setContent(xml, &errorMsg, &errorLine, &errorColumn)) {
+        qCritical() << "Can't read config";
+        qCritical() << "Line:" << errorLine << "Colunm:" << errorColumn;
+        qCritical() << errorMsg;
+    }
+    return config;
+}
+
+QWidget *NetworkConfigurator::editorFor(const QDomElement &param)
 {
     if(param.attribute("type") == "integer") {
         QSpinBox *spinBox = new QSpinBox(parametersGroup);
@@ -97,11 +169,11 @@ QWidget *NetworkConfigurator::editorFor(QDomElement param)
             spinBox->setMinimum(param.attribute("min").toInt());
         if(!param.attribute("max").isEmpty())
             spinBox->setMaximum(param.attribute("max").toInt());
-        spinBox->setValue(param.text().toInt());
+        spinBox->setValue(param.attribute("value").toInt());
         return spinBox;
     } else if(param.attribute("type") == "boolean") {
         QCheckBox *checkBox = new QCheckBox(parametersGroup);
-        checkBox->setChecked(param.text().toInt());
+        checkBox->setChecked(param.attribute("value").toInt());
         return checkBox;
     } else if(param.attribute("type") == "enumeration") {
         QComboBox *comboBox = new QComboBox(parametersGroup);
@@ -110,17 +182,38 @@ QWidget *NetworkConfigurator::editorFor(QDomElement param)
             comboBox->addItem(value.text());
             value = value.nextSiblingElement();
         }
-        comboBox->setCurrentIndex(param.text().toInt());
+        comboBox->setCurrentIndex(param.attribute("value").toInt());
         return comboBox;
     } else {
         return 0;
     }
 }
 
-QLabel *NetworkConfigurator::labelFor(QDomElement param)
+QLabel *NetworkConfigurator::labelFor(const QDomElement &param) const
 {
     QLabel *label = new QLabel(parametersGroup);
     label->setText(param.attribute("description") + ":");
     label->setWordWrap(true);
     return label;
+}
+
+bool NetworkConfigurator::setValue(QDomDocument &doc, QDomElement &param, int num)
+{
+    if(parametersLayout->count() <= num) {
+        return false;
+    }
+
+    if(param.attribute("type") == "integer") {
+        QSpinBox *spinBox = static_cast<QSpinBox*>(parametersLayout->itemAt(num)->layout()->itemAt(1)->widget());
+        param.setAttribute("min", spinBox->minimum());
+        param.setAttribute("max", spinBox->maximum());
+        param.setAttribute("value", spinBox->value());
+    } else if(param.attribute("type") == "boolean") {
+        QCheckBox *checkBox = static_cast<QCheckBox*>(parametersLayout->itemAt(num)->layout()->itemAt(1)->widget());
+        param.setAttribute("value", (int)checkBox->isChecked());
+    } else if(param.attribute("type") == "enumeration") {
+        QComboBox *comboBox = static_cast<QComboBox*>(parametersLayout->itemAt(num)->layout()->itemAt(1)->widget());
+        param.setAttribute("value", comboBox->currentIndex());
+    }
+    return true;
 }

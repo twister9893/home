@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Конфигуратор канальной части</string>
+   <string>Конфигуратор сетевого соединения</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
@@ -22,7 +22,7 @@
      <item>
       <widget class="QLabel" name="label">
        <property name="text">
-        <string>Протокол:</string>
+        <string>Сетевой интерфейс:</string>
        </property>
       </widget>
      </item>
@@ -35,6 +35,9 @@
     <widget class="QGroupBox" name="parametersGroup">
      <property name="title">
       <string>Параметры</string>
+     </property>
+     <property name="flat">
+      <bool>false</bool>
      </property>
      <layout class="QVBoxLayout" name="parametersLayout"/>
     </widget>
@@ -61,6 +64,13 @@
       <widget class="QPushButton" name="saveButton">
        <property name="text">
         <string>Сохранить</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="openButton">
+       <property name="text">
+        <string>Открыть</string>
        </property>
       </widget>
      </item>
