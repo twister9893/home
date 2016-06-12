@@ -13,6 +13,7 @@ NetworkConfigurator::NetworkConfigurator(QWidget *parent) :
 
     connect(openButton, SIGNAL(clicked()), this, SLOT(openConfig()));
     connect(saveButton, SIGNAL(clicked()), this, SLOT(saveConfig()));
+    connect(defaultButton, SIGNAL(clicked()), this, SLOT(setConfigDefault()));
     connect(quitButton, SIGNAL(clicked()), this, SLOT(quit()));
     connect(protocolCombo, SIGNAL(currentIndexChanged(int)), this, SLOT(setConfigDefault(int)));
 
@@ -35,9 +36,17 @@ void NetworkConfigurator::quit()
     exit(0);
 }
 
+void NetworkConfigurator::setConfigDefault()
+{
+    setConfigDefault(protocolCombo->currentIndex());
+}
+
 void NetworkConfigurator::setConfigDefault(int id)
 {
-    constructWindow(_protocols.at(id)->configure());
+    if(id < 0 || id >= _protocols.size())
+        return;
+    QString xml = _protocols.at(id)->configure();
+    constructWindow(xml);
 }
 
 bool NetworkConfigurator::readFromFile(const QString &fileName)
@@ -45,7 +54,8 @@ bool NetworkConfigurator::readFromFile(const QString &fileName)
     QFile file(fileName);
     if(!file.open(QIODevice::ReadOnly))
         return false;
-    QString xml(file.readAll());
+    QTextStream stream(&file);
+    QString xml = stream.readAll();
     file.close();
     constructWindow(xml);
     return true;
@@ -54,6 +64,8 @@ bool NetworkConfigurator::readFromFile(const QString &fileName)
 bool NetworkConfigurator::writeToFile(const QString &fileName)
 {
     QDomElement domRoot = _config.documentElement();
+    QFileInfo info(fileName);
+    domRoot.setAttribute("name", info.baseName());
     QDomElement param = domRoot.firstChildElement();
     int num=0;
     while(!param.isNull()) {
@@ -118,6 +130,8 @@ void NetworkConfigurator::constructWindow(const QDomDocument &config)
         return;
     }
 
+    int id = protocolCombo->findText(domRoot.attribute("protocol"));
+    protocolCombo->setCurrentIndex(id);
     QDomElement param = domRoot.firstChildElement();
     while(!param.isNull()) {
         QHBoxLayout *row = new QHBoxLayout();
@@ -136,14 +150,15 @@ void NetworkConfigurator::constructWindow(const QString &xml) {
 
 void NetworkConfigurator::clearWindow()
 {
-    QLayoutItem *item;
-    while( (item = parametersLayout->itemAt(0)) )
+    while(parametersLayout->count())
     {
-            parametersLayout->removeItem(item);
-            parametersLayout->removeWidget(item->widget());
-            delete item->widget();
-            delete item;
-            parametersLayout->update();
+        QLayoutItem *item = parametersLayout->itemAt(0);
+        QLayout *row = item->layout();
+        while(row->count()) {
+            delete row->itemAt(0)->widget();
+        }
+        delete row;
+        parametersLayout->update();
     }
 }
 

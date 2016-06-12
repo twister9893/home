@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!DOCTYPE config>
-<config protocol="Rs-422" name="">
+<config protocol="Rs-422" name="akva">
     <param description="Скорость передачи данных" type="enumeration" value="0" name="baudRate">
         <elem>9600</elem>
         <elem>19200</elem>

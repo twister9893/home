@@ -18,6 +18,7 @@ public slots:
     void openConfig();
     void saveConfig();
     void quit();
+    void setConfigDefault();
     void setConfigDefault(int id);
 
 protected:
