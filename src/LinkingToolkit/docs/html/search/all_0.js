@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['connection',['Connection',['../classConnection.html',1,'']]],
-  ['connectioninterface',['ConnectionInterface',['../classConnectionInterface.html',1,'']]]
+  ['fileeditor',['FileEditor',['../classFileEditor.html',1,'']]]
 ];

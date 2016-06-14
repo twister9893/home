@@ -3,15 +3,16 @@
 <head>
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
-<meta name="generator" content="Doxygen 1.8.6"/>
+<meta name="generator" content="Doxygen 1.8.11"/>
 <title>Linkingtoolkit: Класс FileEditor</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
 <link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
 <script type="text/javascript">
-  $(document).ready(function() { searchBox.OnSelectItem(0); });
+  $(document).ready(function() { init_search(); });
 </script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
 </head>
@@ -21,7 +22,7 @@
 <table cellspacing="0" cellpadding="0">
  <tbody>
  <tr style="height: 56px;">
-  <td style="padding-left: 0.5em;">
+  <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Linkingtoolkit
    </div>
   </td>
@@ -30,7 +31,7 @@
 </table>
 </div>
 <!-- end header part -->
-<!-- Создано системой Doxygen 1.8.6 -->
+<!-- Создано системой Doxygen 1.8.11 -->
 <script type="text/javascript">
 var searchBox = new SearchBox("searchBox", "search",false,'Поиск');
 </script>
@@ -69,7 +70,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Поиск');
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>Указатель</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Классы</a></div>
+</div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -81,6 +82,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Поиск');
 </div><!-- top -->
 <div class="header">
   <div class="summary">
+<a href="#pub-slots">Открытые слоты</a> &#124;
 <a href="#pub-methods">Открытые члены</a> &#124;
 <a href="#pro-methods">Защищенные члены</a> &#124;
 <a href="#pro-attribs">Защищенные данные</a> &#124;
@@ -95,17 +97,12 @@ var searchBox = new SearchBox("searchBox", "search",false,'Поиск');
  <div class="center">
   <img src="classFileEditor.png" usemap="#FileEditor_map" alt=""/>
   <map id="FileEditor_map" name="FileEditor_map">
+<area href="classNetworkConfigurator.html" alt="NetworkConfigurator" shape="rect" coords="0,112,129,136"/>
 </map>
  </div></div>
 <table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
-Открытые члены</h2></td></tr>
-<tr class="memitem:a08530f180ff1ac6c44619467faa8c179"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a08530f180ff1ac6c44619467faa8c179"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>FileEditor</b> (QWidget *parent)</td></tr>
-<tr class="separator:a08530f180ff1ac6c44619467faa8c179"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7a1a191949fc319ef9f743ba7cd9f457"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a7a1a191949fc319ef9f743ba7cd9f457"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>setDefaultDir</b> (QString defaultDir)</td></tr>
-<tr class="separator:a7a1a191949fc319ef9f743ba7cd9f457"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-slots"></a>
+Открытые слоты</h2></td></tr>
 <tr class="memitem:a00d4c3b07ab8805101c7af081a494030"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a00d4c3b07ab8805101c7af081a494030"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>create</b> ()</td></tr>
 <tr class="separator:a00d4c3b07ab8805101c7af081a494030"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -118,12 +115,21 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>save</b> ()</td></tr>
 <tr class="memitem:a26ebe5ecf0599330f79b1e2a753b1276"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a26ebe5ecf0599330f79b1e2a753b1276"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>saveAs</b> ()</td></tr>
 <tr class="separator:a26ebe5ecf0599330f79b1e2a753b1276"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a57b61f629ea12a659320f71f88357289"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a57b61f629ea12a659320f71f88357289"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>close</b> ()</td></tr>
-<tr class="separator:a57b61f629ea12a659320f71f88357289"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afe0fce02cbf87352955fa50179d1db38"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="afe0fce02cbf87352955fa50179d1db38"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>quit</b> ()</td></tr>
+<tr class="separator:afe0fce02cbf87352955fa50179d1db38"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7567c7794fdb3a5492bd889c5154f41e"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a7567c7794fdb3a5492bd889c5154f41e"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>setEdited</b> ()</td></tr>
 <tr class="separator:a7567c7794fdb3a5492bd889c5154f41e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
+Открытые члены</h2></td></tr>
+<tr class="memitem:a08530f180ff1ac6c44619467faa8c179"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a08530f180ff1ac6c44619467faa8c179"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>FileEditor</b> (QWidget *parent)</td></tr>
+<tr class="separator:a08530f180ff1ac6c44619467faa8c179"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7a1a191949fc319ef9f743ba7cd9f457"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a7a1a191949fc319ef9f743ba7cd9f457"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>setDefaultDir</b> (QString defaultDir)</td></tr>
+<tr class="separator:a7a1a191949fc319ef9f743ba7cd9f457"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
 Защищенные члены</h2></td></tr>
@@ -158,9 +164,9 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>_isEdited</b></td></t
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Документация по Linkingtoolkit. Последние изменения: Вт 14 Июн 2016 12:32:54. Создано системой &#160;<a href="http://www.doxygen.org/index.html">
+Документация по Linkingtoolkit. Последние изменения: Сб 11 Июн 2016 22:54:34. Создано системой &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
-</a> 1.8.6
+</a> 1.8.11
 </small></address>
 </body>
 </html>
