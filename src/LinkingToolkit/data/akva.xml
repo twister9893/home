@@ -1,0 +1,18 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE config>
+<config interface="Rs-422" name="akva">
+    <param description="Скорость передачи данных" type="enumeration" value="9600" key="baudRate">
+        <elem>9600</elem>
+        <elem>19200</elem>
+    </param>
+    <param description="Контроль четности" type="boolean" value="1" key="fParity"/>
+    <param description="Схема контроля четности" type="enumeration" value="NOPARITY" key="parity">
+        <elem>EVENPARITY</elem>
+        <elem>MARKPARITY</elem>
+        <elem>NOPARITY</elem>
+        <elem>ODDPARITY</elem>
+        <elem>SPACEPARITY</elem>
+    </param>
+    <param description="Двоичный режим обмена" type="boolean" value="0" key="fBinary"/>
+    <param description="Число информационных бит" type="integer" value="6" min="4" key="byteSize" max="8"/>
+</config>

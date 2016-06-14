@@ -1,0 +1,19 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE config>
+<config interface="Ethernet" name="mr-231">
+    <param description="Тип протокола" key="ifType" type="enumeration" value="iso88023-csmacd">
+        <elem>rfc877-x25</elem>
+        <elem>ethernet-csmacd</elem>
+        <elem>iso88023-csmacd</elem>
+        <elem>iso88024-tokenBus</elem>
+        <elem>iso88025-tokenRing</elem>
+    </param>
+    <param description="Максимальный размер пакета сетевого уровня" key="ifMtu" type="integer" value="128" min="1" max="1000000"/>
+    <param description="Пропускная способность интерфейса" key="ifSpeed" type="integer" value="100" min="1" max="1000000"/>
+    <param description="Физический адрес порта" key="ifPhysAddress" type="string" value="68:b5:99:eb:a1:38"/>
+    <param description="Статус порта" key="ifAdminStatus" type="enumeration" value="testing">
+        <elem>up</elem>
+        <elem>down</elem>
+        <elem>testing</elem>
+    </param>
+</config>
